@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { BookOpen, Lightbulb, Sparkles, Target, TrendingUp, X } from "lucide-react";
-import { CareerGuideResponse, utils_service } from "@/type";
+import { CareerGuideResponse,  } from "@/type";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,8 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import axios from "axios";
+import { utils_service } from "@/context/appContext";
+import toast from "react-hot-toast";
 
 const Careerguide = () => {
   const [open, setOpen] = useState(false);
@@ -45,7 +47,7 @@ const Careerguide = () => {
 
   const getCareerGuide = async () => {
     if (skills.length === 0) {
-      alert("Please add at least one skill");
+      toast.error("Please add at least one skill");
       return;
     }
     setLoading(true);
@@ -55,7 +57,7 @@ const Careerguide = () => {
       });
       setResponse(data);
     } catch (error:any ) {
-      alert(
+      toast.error(
         error?.response?.data?.message ||
           error?.message ||
           "Failed to generate career guidance"

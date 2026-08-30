@@ -1,35 +1,36 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata } from 'next';
+import './globals.css';
 import Navbar from '@/components/navbar';
-import { ThemeProvider} from "@/components/theme-provide";
-
+import { ThemeProvider } from "@/components/theme-provide";
+import { AppProvider } from '@/context/appContext';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
-	title: 'Frontend',
-	description: 'Frontend application',
-}
+	title: 'Job Portal',
+	description: 'Job Portal Application',
+};
 
 export default function RootLayout({
 	children,
 }: Readonly<{
-	children: React.ReactNode
+	children: React.ReactNode;
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-
 			<body>
-				<ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-			  <Navbar/>
-                {children}
-		  </ThemeProvider>
-              
-                
-                </body>
+				<AppProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<Navbar />
+						{children}
+						<Toaster position="top-right" />
+					</ThemeProvider>
+				</AppProvider>
+			</body>
 		</html>
-	)
+	);
 }
