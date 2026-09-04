@@ -1,7 +1,7 @@
 "use client";
 import { AppContextType, AppProviderProps, User } from "@/type";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import {Toaster} from "react-hot-toast"
+import toast, {Toaster} from "react-hot-toast"
 import Cookies from "js-cookie";
 import axios from "axios";
 
@@ -36,10 +36,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         });
         setUser(data);
         setIsAuth(true);
-      } catch (error) {
+      } catch (error:any) {
         Cookies.remove("token");
         setUser(null);
         setIsAuth(false);
+        console.log(error.message);
+        
       } finally {
         setLoading(false);
       }
@@ -47,6 +49,87 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     fetchUser();
   }, []);
+
+
+  async function updateProfilepic(formData: any) {
+    setLoading(true);
+    try {
+      const token = Cookies.get("token");
+      const { data } = await axios.put(
+        `${User_service}/api/user/update/picupdate`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(data.message || "Profile picture updated successfully");
+      if (data.updateduser) {
+        setUser((prev) =>
+          prev ? { ...prev, profile_pic: data.updateduser.profile_pic } : null
+        );
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || error.message || "Failed to update profile picture");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+   async function updateResume(formData: any) {
+    setLoading(true);
+    try {
+      const token = Cookies.get("token");
+      const { data } = await axios.put(
+        `${User_service}/api/user/update/resumeupdate`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(data.message || "Resume updated successfully");
+      const updated = data.user || data.updateduser;
+      if (updated) {
+        setUser((prev) =>
+          prev ? { ...prev, resume: updated.resume, resume_public_id: updated.resume_public_id } : null
+        );
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || error.message || "Failed to update resume");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateUser(name: string, phone_number: string, bio: string) {
+    setBtnLoading(true);
+    try {
+      const token = Cookies.get("token");
+      const { data } = await axios.put(
+        `${User_service}/api/user/update/profile`,
+        { name, phone_number, bio },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(data.message || "Profile updated successfully");
+      if (data.user) {
+        setUser((prev) =>
+          prev ? { ...prev, ...data.user } : null
+        );
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || error.message || "Failed to update profile");
+    } finally {
+      setBtnLoading(false);
+    }
+  }
 
   return (
     <AppContext.Provider
@@ -59,6 +142,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setLoading,
         setIsAuth,
         setBtnLoading,
+        updateProfilepic,
+        updateResume,
+        updateUser
       }}
     >
       {children}
