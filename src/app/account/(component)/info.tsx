@@ -34,7 +34,7 @@ const Info: React.FC<Accountpropes> = ({ user, isYourAccount }) => {
   const [phone_number, setPhoneNumber] = useState("");
   const [bio, setBio] = useState("");
 
-  const { updateProfilepic, updateResume, btnLoading, updateUser } =
+  const { updateProfilepic, updateResume, btnLoading, updateUser, user: loggedInUser } =
     useAppData();
 
   const handelClick = () => {
@@ -202,22 +202,28 @@ const Info: React.FC<Accountpropes> = ({ user, isYourAccount }) => {
                     View Resume Pdf
                   </Link>
                 </div>
-                {/* Edit button */}
-                <Button
-                  variant={"outline"}
-                  size={"sm"}
-                  onClick={handleResumeClick}
-                  className={"gap-2"}
-                >
-                  Update
-                </Button>
-                <input
-                  type="file"
-                  ref={resumeRef}
-                  className="hidden"
-                  accept="application/pdf"
-                  onChange={changeResume}
-                />
+                {/* Edit button - only for job seeker owner, hidden from recruiters */}
+                {isYourAccount &&
+                  user.role === "jobseeker" &&
+                  loggedInUser?.role === "jobseeker" && (
+                    <>
+                      <Button
+                        variant={"outline"}
+                        size={"sm"}
+                        onClick={handleResumeClick}
+                        className={"gap-2"}
+                      >
+                        Update
+                      </Button>
+                      <input
+                        type="file"
+                        ref={resumeRef}
+                        className="hidden"
+                        accept="application/pdf"
+                        onChange={changeResume}
+                      />
+                    </>
+                  )}
               </div>
             </div>
           )}

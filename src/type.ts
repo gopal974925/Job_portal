@@ -102,7 +102,8 @@ export interface AppContextType {
   updateProfilepic:(formData:any)=>Promise<void>;
   updateResume:(formData:any)=>Promise<void>;
   updateUser:(name:string,phone_number:string,bio:string)=>Promise<void>;
-
+  addSkill:(skill:string)=>Promise<void>;
+  removeSkill:(skill:string)=>Promise<void>;
 }
 
 
@@ -112,5 +113,51 @@ export interface AppProviderProps{
 export interface Accountpropes{
   user:User;
   isYourAccount:boolean;
-  
+}
+
+export interface Company {
+  company_id: number;
+  _id?: string;
+  name: string;
+  description: string;
+  website: string;
+  logo: string;
+  logo_public_id?: string;
+  recruiter_id?: number;
+  created_at?: string;
+  jobs?: jobs[];
+}
+
+export interface jobs{
+  job_id:number ;
+  title:string;
+  description:string;
+  salary:number|null;
+  location:string| null;
+  job_type:"full-time" | "part-time" | "contract" | "internship" |  null;
+  openings:number;
+  role:string;
+  work_location:"remote" | "on-site" | "hybrid" | null;
+  company_id:number;
+  posted_by_recruiter_id:number;
+  created_at:string;
+  is_active:boolean;
+
+}
+
+type ApplicationStatus = "submitted" | "rejected" | "hired";
+
+export interface Application {
+  application_id: number;
+  job_id: number;
+  applicant_id: number;
+  application_email: string;
+  resume: string;
+  applied_at: string;
+  subscription_status: boolean;
+  job_title: string;
+  job_salary: number | null;
+  status: ApplicationStatus;
+  job_location: string | null;
+  created_at: string;
 }

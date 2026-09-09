@@ -40,8 +40,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         Cookies.remove("token");
         setUser(null);
         setIsAuth(false);
-        console.log(error.message);
-        
       } finally {
         setLoading(false);
       }
@@ -76,8 +74,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setLoading(false);
     }
   }
-
-
    async function updateResume(formData: any) {
     setLoading(true);
     try {
@@ -92,10 +88,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
       );
       toast.success(data.message || "Resume updated successfully");
-      const updated = data.user || data.updateduser;
-      if (updated) {
+      if (data.updateduser) {
         setUser((prev) =>
-          prev ? { ...prev, resume: updated.resume, resume_public_id: updated.resume_public_id } : null
+          prev ? { ...prev, resume: data.updateduser.resume } : null
         );
       }
     } catch (error: any) {
@@ -104,14 +99,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setLoading(false);
     }
   }
-
-  async function updateUser(name: string, phone_number: string, bio: string) {
+  async function updateUser(name: string, phoneNumber: string, bio: string) {
     setBtnLoading(true);
     try {
       const token = Cookies.get("token");
       const { data } = await axios.put(
         `${User_service}/api/user/update/profile`,
-        { name, phone_number, bio },
+        { name, phone_number: phoneNumber, bio },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -120,12 +114,70 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       );
       toast.success(data.message || "Profile updated successfully");
       if (data.user) {
-        setUser((prev) =>
-          prev ? { ...prev, ...data.user } : null
-        );
+        setUser((prev) => (prev ? { ...prev, ...data.user } : null));
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || error.message || "Failed to update profile");
+    } finally {
+      setBtnLoading(false);
+    }
+  }
+
+  async function addSkill(skill: string) {
+    setBtnLoading(true);
+    try {
+      const token = Cookies.get("token");
+      const { data } = await axios.post(
+        `${User_service}/api/user/skill/add`,
+        { skillname: skill.trim() },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(data.message || "Skill added successfully");
+      setUser((prev) => {
+        if (!prev) return null;
+        const currentSkills = prev.skills || [];
+        if (currentSkills.includes(skill.trim())) return prev;
+        return {
+          ...prev,
+          skills: [...currentSkills, skill.trim()],
+        };
+      });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || error.message || "Failed to add skill");
+    } finally {
+      setBtnLoading(false);
+    }
+  }
+
+  async function removeSkill(skill: string) {
+    setBtnLoading(true);
+    try {
+      const token = Cookies.get("token");
+      const { data } = await axios.delete(
+        `${User_service}/api/user/skill/delete`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          data: {
+            skillname: skill.trim(),
+          },
+        }
+      );
+      toast.success(data.message || "Skill removed successfully");
+      setUser((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          skills: (prev.skills || []).filter((s) => s !== skill.trim()),
+        };
+      });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || error.message || "Failed to remove skill");
     } finally {
       setBtnLoading(false);
     }
@@ -144,11 +196,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setBtnLoading,
         updateProfilepic,
         updateResume,
-        updateUser
+        updateUser,
+        addSkill,
+        removeSkill,
       }}
     >
       {children}
-      <Toaster/>
+      <Toaster />
     </AppContext.Provider>
   );
 };
