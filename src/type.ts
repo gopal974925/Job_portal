@@ -115,49 +115,33 @@ export interface Accountpropes{
   isYourAccount:boolean;
 }
 
+export interface Job {
+  job_id: number;
+  title: string;
+  description: string;
+  salary?: number | string | null;
+  location?: string | null;
+  job_type?: string | null;
+  openings?: number;
+  role?: string;
+  work_location?: string;
+  company_id: number | string;
+  posted_by_recruiter_id?: number | string;
+  created_at?: string;
+  is_active?: boolean;
+  company_name?: string;
+  company_logo?: string;
+}
+
 export interface Company {
-  company_id: number;
+  company_id: number | string;
   _id?: string;
   name: string;
   description: string;
   website: string;
   logo: string;
   logo_public_id?: string;
-  recruiter_id?: number;
+  recruiter_id?: number | string;
   created_at?: string;
-  jobs?: jobs[];
-}
-
-export interface jobs{
-  job_id:number ;
-  title:string;
-  description:string;
-  salary:number|null;
-  location:string| null;
-  job_type:"full-time" | "part-time" | "contract" | "internship" |  null;
-  openings:number;
-  role:string;
-  work_location:"remote" | "on-site" | "hybrid" | null;
-  company_id:number;
-  posted_by_recruiter_id:number;
-  created_at:string;
-  is_active:boolean;
-
-}
-
-type ApplicationStatus = "submitted" | "rejected" | "hired";
-
-export interface Application {
-  application_id: number;
-  job_id: number;
-  applicant_id: number;
-  application_email: string;
-  resume: string;
-  applied_at: string;
-  subscription_status: boolean;
-  job_title: string;
-  job_salary: number | null;
-  status: ApplicationStatus;
-  job_location: string | null;
-  created_at: string;
+  jobs?: Job[];
 }
