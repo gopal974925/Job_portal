@@ -20,7 +20,6 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Briefcase,
-  Building2,
   Calendar,
   CheckCircle2,
   Clock,

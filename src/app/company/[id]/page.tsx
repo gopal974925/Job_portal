@@ -387,11 +387,15 @@ const CompanyPage = () => {
                     <div className="flex items-center gap-2 shrink-0">
                       {isRecruiterOwner ? (
                         <>
+
+
                           <Link href={`/jobs/${job.job_id}`}>
-                            <Button variant="outline" size="sm">
-                              Applicants / Details
+                            <Button variant="outline" size="sm" className="gap-1.5">
+                              <Users className="h-3.5 w-3.5" />
+                              Applicants & Details
                             </Button>
                           </Link>
+                          
                           <Button
                             variant="destructive"
                             size="sm"

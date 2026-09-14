@@ -24,6 +24,7 @@ import {
   Building2,
   Calendar,
   CheckCircle2,
+  ChevronDown,
   Clock,
   DollarSign,
   ExternalLink,
@@ -35,6 +36,13 @@ import {
   Users,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 interface Application {
   application_id: number;
@@ -66,6 +74,37 @@ const JobDetailPage = () => {
   // Jobseeker: applying
   const [applying, setApplying] = useState(false);
   const [applied, setApplied] = useState(false);
+  const [updatingAppId, setUpdatingAppId] = useState<number | null>(null);
+
+  const handleStatusUpdate = async (applicationId: number, newStatus: string) => {
+    try {
+      setUpdatingAppId(applicationId);
+      await axios.put(
+        `${Job_service}/api/job/application/update/${applicationId}`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(`Application marked as ${newStatus}`);
+      setApplications((prev) =>
+        prev.map((app) =>
+          app.application_id === applicationId
+            ? { ...app, status: newStatus }
+            : app
+        )
+      );
+    } catch (error: any) {
+      console.error("Status update error:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to update application status"
+      );
+    } finally {
+      setUpdatingAppId(null);
+    }
+  };
 
   async function fetchJob() {
     if (!id) return;
@@ -403,13 +442,76 @@ const JobDetailPage = () => {
                       </p>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <span>Applied: {new Date(app.applied_at).toLocaleDateString()}</span>
-                        <span className="capitalize font-medium text-foreground">
-                          Status: {app.status}
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize ${
+                            app.status === "hired"
+                              ? "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300 border-green-200 dark:border-green-800"
+                              : app.status === "rejected"
+                              ? "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border-red-200 dark:border-red-800"
+                              : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-200 dark:border-amber-800"
+                          }`}
+                        >
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full ${
+                              app.status === "hired"
+                                ? "bg-green-500"
+                                : app.status === "rejected"
+                                ? "bg-red-500"
+                                : "bg-amber-500"
+                            }`}
+                          />
+                          {app.status}
                         </span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
+                      {/* Edit application status */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          render={
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={updatingAppId === app.application_id}
+                              className="gap-1 text-xs"
+                            >
+                              {updatingAppId === app.application_id ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+                              )}
+                              Update Status
+                            </Button>
+                          }
+                        />
+                        <DropdownMenuContent align="end" className="w-36">
+                          <DropdownMenuItem
+                            onClick={() => handleStatusUpdate(app.application_id, "submitted")}
+                            className="gap-2 text-xs"
+                          >
+                            <span className="h-2 w-2 rounded-full bg-amber-500" />
+                            Submitted
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleStatusUpdate(app.application_id, "hired")}
+                            className="gap-2 text-xs"
+                          >
+                            <span className="h-2 w-2 rounded-full bg-green-500" />
+                            Hired
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleStatusUpdate(app.application_id, "rejected")}
+                            className="gap-2 text-xs text-destructive"
+                          >
+                            <span className="h-2 w-2 rounded-full bg-red-500" />
+                            Rejected
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+
+
                       {app.resume && (
                         <a
                           href={app.resume}
