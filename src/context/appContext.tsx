@@ -9,6 +9,7 @@ export const utils_service = "http://localhost:3001";
 export const Auth_service = "http://localhost:4000";
 export const Job_service = "http://localhost:3003";
 export const User_service = "http://localhost:3002";
+export const payment_service="http://localhost:5005"
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
