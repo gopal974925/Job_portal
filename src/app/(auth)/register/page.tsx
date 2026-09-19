@@ -91,7 +91,7 @@ const RegisterPage = () => {
       if (data.token) {
         Cookies.set("token", data.token, {
           expires: 15,
-          secure: true,
+          secure: false,
           path: "/",
         });
       }

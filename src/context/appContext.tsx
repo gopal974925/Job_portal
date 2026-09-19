@@ -5,11 +5,11 @@ import toast, {Toaster} from "react-hot-toast"
 import Cookies from "js-cookie";
 import axios from "axios";
 
-export const utils_service = "http://localhost:3001";
-export const Auth_service = "http://localhost:4000";
-export const Job_service = "http://localhost:3003";
-export const User_service = "http://localhost:3002";
-export const payment_service="http://localhost:5005"
+export const utils_service = "http://13.200.217.93:3001";
+export const Auth_service = "http://13.200.217.93:4000";
+export const Job_service = "http://13.200.217.93:3003";
+export const User_service = "http://13.200.217.93:3002";
+export const payment_service="http://13.200.217.93:5005"
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 

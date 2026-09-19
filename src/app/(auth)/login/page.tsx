@@ -48,7 +48,7 @@ const LoginPage = () => {
 
       Cookies.set("token", data.token, {
         expires: 15,
-        secure: true,
+        secure: false,
         path: "/",
       });
 
