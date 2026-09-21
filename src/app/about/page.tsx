@@ -19,13 +19,13 @@ const About = () => {
                     {/* Content */}
                     <div className="text-center space-y-6">
                         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-                            Our Mission At Hire
-                            <span className="text-red-500">Heaven</span>
+                            Our Mission to help in
+                            <span className="text-red-500">Hireing</span>
                         </h1>
                         <p
                             className="text-lg md:text-xl leading-relaxed opacity-90 max-w-3xl mx-auto"
                         >
-                            At HireHaven, we are dedicated to revolutionizing the job search
+                            At Jobportal, we are dedicated to revolutionizing the job search
                             experience. Our mission is to create meaningful connections
                             between talented individuals and forward-thinking companies,
                             fostering growth and success for both.
